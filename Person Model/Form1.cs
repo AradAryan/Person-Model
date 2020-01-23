@@ -59,7 +59,7 @@ namespace Person_Model
         }
 
 
-        ///////////////
+        ////////////
         public byte[] ImageToByteArray(System.Drawing.Image imageIn)
         {
             using (var ms = new MemoryStream())
@@ -160,7 +160,6 @@ namespace Person_Model
             //   bitMapImage.Dispose();
             //  System.IO.File.AppendAllText(@"D:\SepamFTP.txt", "115: " + model.NationalCode + "\r" + "\n");
 
-
             return bitMapImage;
         }
 
@@ -177,6 +176,7 @@ namespace Person_Model
             graph.RotateTransform(0);
             graph.DrawString(Text, font, brush, new Point(x, y), format);
         }
+
         public static void AddText(this Graphics graph, string Text, Font font, Brush brush, int x, int y, int rotate)
         {
             StringFormat format = new StringFormat();
@@ -184,7 +184,6 @@ namespace Person_Model
             format.FormatFlags = StringFormatFlags.DirectionRightToLeft;
             graph.RotateTransform(rotate);
             graph.DrawString(Text, font, brush, new Point(x, y), format);
-
         }
 
         public static void InsertImage(this Graphics graphicImage, byte[] Image)
@@ -199,19 +198,22 @@ namespace Person_Model
         public static string ConvertIntToString(int value)
         {
             int counter;
-            string output = "";
             string input;
+            string output = "";
+
             if (value.ToString().Length == 9)
             {
-                input = value.ToString("0000000000");
                 counter = 10;
+                input = value.ToString("0000000000");
             }
             else
             {
-                input = value.ToString("00000000");
                 counter = 8;
+                input = value.ToString("00000000");
             }
-            string[] numbers = { "۰", "۱", "۲", "۳", "۴", "۵", "۶", "۷", "۸", "۹" };
+
+            string[] numbers =
+                { "۰", "۱", "۲", "۳", "۴", "۵", "۶", "۷", "۸", "۹" };
 
             for (int i = 0; i < counter; i++)
             {
@@ -224,14 +226,18 @@ namespace Person_Model
                     }
                 }
                 if (input.Length == 0)
+                {
                     return output;
+                }
                 input = input.Remove(0, 1);
             }
+
             if (counter != 10)
             {
                 output = output.Insert(4, "/");
                 output = output.Insert(7, "/");
             }
+
             return output;
         }
     }
