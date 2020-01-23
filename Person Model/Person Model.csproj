@@ -82,6 +82,8 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Resources\BYeka.ttf" />
+    <None Include="Resources\BYekan+ Bold.ttf" />
     <None Include="Resources\kartMeli.png" />
   </ItemGroup>
   <ItemGroup>

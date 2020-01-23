@@ -18,6 +18,9 @@ namespace Person_Model
         public int BirthDate { get; set; }
         public string FatherName { get; set; }
         public string IdentityNo { get; set; }
+        /// <summary>
+        /// تغییر لانگ به استرینگ برای صفر اول کد ملی
+        /// </summary>
         public long NationalCode { get; set; }
         public bool Almosana { get; set; }
         public int Gender { get; set; }

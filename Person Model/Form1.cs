@@ -4,9 +4,12 @@ using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Drawing.Imaging;
+using System.Drawing.Text;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -31,15 +34,15 @@ namespace Person_Model
                 BirthDate = 13780825,
                 DeathDate = "Unknonw",
                 FatherName = "حجت الله",
-                FirstName = "آراد",
+                FirstName = "محمدجواد",
                 FollowUp = new Guid(),
                 Gender = 0,
                 Id = 0151067030,
                 IsDead = false,
-                LastName = "آریایی",
-                NationalCode = 01510670030,
+                LastName = "عرب سلمانی",
+                NationalCode = 0410670030,
             };
-
+            //  MessageBox.Show(ImageTools.ConvertIntToString((Int32)p.NationalCode));
             pictureBox1.Image = CreateResponse(p);
 
 
@@ -66,40 +69,58 @@ namespace Person_Model
             }
         }
 
-        ////////////        
+        ////////////
         public Image CreateResponse(PersonInfoModel model)
         {
-            System.IO.File.AppendAllText(@"D:\SepamFTP.txt", "13: " + model.NationalCode + "\r" + "\n");
+            File.AppendAllText(@"D:\SepamFTP.txt", "13: " + model.NationalCode + "\r" + "\n");
 
-            // var temp = new Bitmap(Person_Model.Properties.Resources.correct);//(Bitmap.FromFile(@"C:\Users\faranam\source\Repos\Person Model\Person Model\Resource1\correct.jpg"));
-            Bitmap bitMapImage = new Bitmap(@"C:\Users\faranam\Desktop\kartMelii.png"); //Resource1.kartMeli;
+            Bitmap bitMapImage = new Bitmap(@"C:\Users\javad\Desktop\Final Card.png"); //Resource1.kartMeli;
 
             Graphics graphicImage = Graphics.FromImage(bitMapImage);
 
-            ///کد ملی
-            graphicImage.AddText(model.NationalCode > 0 ? model.NationalCode.ToString("0000000000") : "", new Font(Font.FontFamily, 15, FontStyle.Regular)/*NationalCodeFont*/, Brushes.Maroon, 655, 146);
-            graphicImage.AddText(model.FirstName, new Font(Font.FontFamily, 15, FontStyle.Regular)/*MainFont*/, Brushes.Black, 655, 203);
-            graphicImage.AddText(model.LastName, new Font(Font.FontFamily, 15, FontStyle.Regular)/*MainFont*/, Brushes.Black, 655, 250);
-            //سال تولد به عدد
-            graphicImage.AddText(model.BirthDate > 0 ? model.BirthDate.ToString("0000/00/00") : "", new Font(Font.FontFamily, 15, FontStyle.Regular) /*DetialsFont*/, Brushes.Black, 655, 303);
-            //   graphicImage.AddText((model.IdentityNo != "0") ? model.IdentityNo : "", new Font(Font.FontFamily, 15, FontStyle.Regular) /*MainFont*/, Brushes.Black, 6159, 250);
-            //نام پدر
-            graphicImage.AddText(model.FatherName, new Font(Font.FontFamily, 15, FontStyle.Regular) /*FatherNameFont*/, Brushes.Black, 655, 355);
-            //نام پدر
-            graphicImage.AddText((model.NationalCode > 0) ? model.IsDead ? "(فوت شده)" : "" : "", new Font(Font.FontFamily, 15, FontStyle.Regular) /*FatherNameFont*/, Brushes.Black, 660, 323);
-            //تاریخ درخواست
-          //  graphicImage.AddText("تاریخ استعلام : " + "1398/11/11", new Font(Font.FontFamily, 15, FontStyle.Regular) /* DetialsFont*/, Brushes.Black, 655, 400);
+            //Select your font from the resources.
+            PrivateFontCollection pfc = new PrivateFontCollection();
+            //My font here is "Digireu.ttf"
+            int fontLength = Properties.Resources.BYekan.Length;
 
+            // create a buffer to read in to
+            byte[] fontdata = Properties.Resources.BYekan;
+
+            // create an unsafe memory block for the font data
+            System.IntPtr data = Marshal.AllocCoTaskMem(fontLength);
+
+            // copy the bytes to the unsafe memory block
+            Marshal.Copy(fontdata, 0, data, fontLength);
+
+            // pass the font to the font collection
+            pfc.AddMemoryFont(data, fontLength);
+
+
+            Font MainFont = new Font(pfc.Families[0], 20, FontStyle.Regular);
+            ///کد ملی
+            graphicImage.AddText(model.NationalCode > 0 ? ImageTools.ConvertIntToString((Int32)model.NationalCode) : "", MainFont/*NationalCodeFont*/, Brushes.Black, 650, 121);
+            graphicImage.AddText(model.FirstName, MainFont, Brushes.Black, 650, 170);
+            graphicImage.AddText(model.LastName, MainFont, Brushes.Black, 650, 215);
+            //سال تولد به عدد
+            graphicImage.AddText(model.BirthDate > 0 ? ImageTools.ConvertIntToString((Int32)model.BirthDate) : "", MainFont /*DetialsFont*/, Brushes.Black, 650, 260);
+            //   graphicImage.AddText((model.IdentityNo != "0") ? model.IdentityNo : "", font /*MainFont*/, Brushes.Black, 6159, 250);
+            //نام پدر
+            graphicImage.AddText(model.FatherName, MainFont /*FatherNameFont*/, Brushes.Black, 650, 305);
             //وضعیت حیات
-            //  graphicImage.AddText(model.Almosana ? "(المثنی)" : "اصل", new Font(Font.FontFamily, 15, FontStyle.Regular) /*FatherNameFont*/, Brushes.Black, 629, 397);
+            graphicImage.AddText((model.NationalCode > 0) ? model.IsDead ? "(فوت شده)" : "" : "", MainFont /*FatherNameFont*/, Brushes.Black, 650, 318);
+            //تاریخ درخواست
+            //  graphicImage.AddText("تاریخ استعلام : " + "1398/11/11", font /* DetialsFont*/, Brushes.Black, 655, 400);
+
+            //المثنی / اصل
+            //  graphicImage.AddText(model.Almosana ? "(المثنی)" : "اصل", font /*FatherNameFont*/, Brushes.Black, 629, 397);
 
             graphicImage.AddText(model.Almosana ? "المثنی" : "اصل", new Font(Font.FontFamily, 80, FontStyle.Bold) /*FatherNameFont*/, Brushes.LightSlateGray, 200, 400, -45);
 
 
             //روز به حروف
-            // graphicImage.AddText((model.Serial != "0") ? string.Format("{0} / {1}", model.Seri, model.Serial) : "", new Font(Font.FontFamily, 15, FontStyle.Regular) /*NationalCodeFont*/, Brushes.Maroon, 580, 360);
+            // graphicImage.AddText((model.Serial != "0") ? string.Format("{0} / {1}", model.Seri, model.Serial) : "", font /*NationalCodeFont*/, Brushes.Maroon, 580, 360);
 
-            //  graphicImage.AddText(model.ZipCode, new Font(Font.FontFamily, 15, FontStyle.Regular)/* FatherNameFont*/, Brushes.Black, 685, 1532);
+            //  graphicImage.AddText(model.ZipCode, font/* FatherNameFont*/, Brushes.Black, 685, 1532);
 
             ////روز به حروف
             //graphicImage.AddText(model.DateString[2], DetialsFont, Brushes.Black, 1578, 1560);
@@ -116,14 +137,14 @@ namespace Person_Model
             //graphicImage.AddText(model.DateString[3], DetialsFont, Brushes.Black, 328, 5158);
 
             //کد پیگیری
-            //  graphicImage.AddText(model.FollowUp.ToString(), new Font(Font.FontFamily, 15, FontStyle.Regular)/* DetialsFont*/, Brushes.Black, 300, 605);
+            //  graphicImage.AddText(model.FollowUp.ToString(), font/* DetialsFont*/, Brushes.Black, 300, 605);
             //FollowUp(graphicImage, model.FollowUp.ToString());
 
             //پیام
             if (model.Message != null)
             {
 
-                graphicImage.AddText(model.Message.ToString(), new Font(Font.FontFamily, 15, FontStyle.Regular)/* MessageFont*/, Brushes.Maroon, 370, 1530);
+                graphicImage.AddText(model.Message.ToString(), MainFont/* MessageFont*/, Brushes.Maroon, 370, 1530);
             }
 
             /*    IsMan(graphicImage, model.Gender);
@@ -175,6 +196,43 @@ namespace Person_Model
             }
         }
 
+        public static string ConvertIntToString(int value)
+        {
+            int counter;
+            string output = "";
+            string input;
+            if (value.ToString().Length == 9)
+            {
+                input = value.ToString("0000000000");
+                counter = 10;
+            }
+            else
+            {
+                input = value.ToString("00000000");
+                counter = 8;
+            }
+            string[] numbers = { "۰", "۱", "۲", "۳", "۴", "۵", "۶", "۷", "۸", "۹" };
 
+            for (int i = 0; i < counter; i++)
+            {
+                for (int j = 0; j < 10; j++)
+                {
+                    if (input.StartsWith(j.ToString()))
+                    {
+                        output += numbers[j];
+                        break;
+                    }
+                }
+                if (input.Length == 0)
+                    return output;
+                input = input.Remove(0, 1);
+            }
+            if (counter != 10)
+            {
+                output = output.Insert(4, "/");
+                output = output.Insert(7, "/");
+            }
+            return output;
+        }
     }
 }
