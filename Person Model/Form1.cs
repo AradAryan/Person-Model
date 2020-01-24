@@ -1,17 +1,17 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
+using System.IO;
+using System.Text;
+using System.Linq;
 using System.Data;
 using System.Drawing;
-using System.Drawing.Imaging;
 using System.Drawing.Text;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.ComponentModel;
+using System.Drawing.Imaging;
+using System.Threading.Tasks;
+using System.Collections.Generic;
+using System.Runtime.InteropServices;
+using System.Text.RegularExpressions;
 
 namespace Person_Model
 {
@@ -22,9 +22,6 @@ namespace Person_Model
             InitializeComponent();
         }
 
-        // static Bitmap temp = new Bitmap(Person_Model.Properties.Resources.correct);//(Bitmap.FromFile(@"C:\Users\faranam\source\Repos\Person Model\Person Model\Resource1\correct.jpg"));
-        //  static Bitmap bitMapImage = temp;  //Resource1.kartMeli;
-        //  static Graphics graphicImage = Graphics.FromImage(bitMapImage);
         private void Form1_Load(object sender, EventArgs e)
         {
             var p = new PersonInfoModel();
@@ -42,24 +39,14 @@ namespace Person_Model
                 LastName = "عرب سلمانی",
                 NationalCode = 0410670030,
             };
-            //  MessageBox.Show(ImageTools.ConvertIntToString((Int32)p.NationalCode));
+
             pictureBox1.Image = CreateResponse(p);
-
-
 
             //  CreateResponse(p);
 
-            //  var temp = new Bitmap(Person_Model.Properties.Resources.correct);
-            //(Bitmap.FromFile(@"C:\Users\faranam\source\Repos\Person Model\Person Model\Resource1\correct.jpg"));
-            //   Bitmap bitMapImage = temp;  //Resource1.kartMeli;
-            //    Graphics graphicImage = Graphics.FromImage(bitMapImage);
-
-            //    ImageTools.InsertImage(graphicImage, ImageToByteArray(temp));
-            //   BackgroundImage = bitMapImage;
         }
 
 
-        ////////////
         public byte[] ImageToByteArray(System.Drawing.Image imageIn)
         {
             using (var ms = new MemoryStream())
@@ -69,7 +56,6 @@ namespace Person_Model
             }
         }
 
-        ////////////
         public Image CreateResponse(PersonInfoModel model)
         {
             File.AppendAllText(@"D:\SepamFTP.txt", "13: " + model.NationalCode + "\r" + "\n");
