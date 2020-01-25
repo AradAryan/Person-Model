@@ -26,7 +26,7 @@ namespace Person_Model
         public int Gender { get; set; }
         public string GenderToString { get { return Gender == 1 ? "مرد" : "زن"; } }
         public bool IsDead { get; set; }
-        public string IsDeadToString { get { return Gender == 1 ? "زنده" : "فوت شده"; } }
+        public string IsDeadToString { get { return IsDead ? "فوت شده" : "زنده"; } }
         public string DeathDate { get; set; }
         public string Message { get; set; }
         public string[] DateString { get; set; }
@@ -39,6 +39,7 @@ namespace Person_Model
         public DateTime InsertDateTime { get; set; }
         public string ZipCode { get; set; }
         public string ZipCodeDescription { get; set; }
+        public bool IsValid { get; set; }
     }
 
 }

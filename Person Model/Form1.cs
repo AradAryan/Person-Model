@@ -1,17 +1,10 @@
 ﻿using System;
-using System.IO;
-using System.Text;
-using System.Linq;
-using System.Data;
 using System.Drawing;
-using System.Drawing.Text;
-using System.Windows.Forms;
-using System.ComponentModel;
 using System.Drawing.Imaging;
-using System.Threading.Tasks;
-using System.Collections.Generic;
+using System.Drawing.Text;
+using System.IO;
 using System.Runtime.InteropServices;
-using System.Text.RegularExpressions;
+using System.Windows.Forms;
 
 namespace Person_Model
 {
@@ -21,13 +14,13 @@ namespace Person_Model
         {
             InitializeComponent();
         }
-
+        public static Bitmap bitMapImage = new Bitmap(@"C:\Users\faranam\Desktop\Final Card.png");
         private void Form1_Load(object sender, EventArgs e)
         {
             var p = new PersonInfoModel();
             p = new PersonInfoModel
             {
-                Almosana = true,
+                Almosana = false,
                 BirthDate = 13780825,
                 DeathDate = "Unknonw",
                 FatherName = "حجت الله",
@@ -38,6 +31,8 @@ namespace Person_Model
                 IsDead = false,
                 LastName = "عرب سلمانی",
                 NationalCode = 0410670030,
+                Message = "کارگران مشغول کارند.",
+                IsValid = true,
             };
 
             pictureBox1.Image = CreateResponse(p);
@@ -60,7 +55,7 @@ namespace Person_Model
         {
             File.AppendAllText(@"D:\SepamFTP.txt", "13: " + model.NationalCode + "\r" + "\n");
 
-            Bitmap bitMapImage = new Bitmap(@"C:\Users\javad\Desktop\Final Card.png"); //Resource1.kartMeli;
+            //Resource1.kartMeli;
 
             Graphics graphicImage = Graphics.FromImage(bitMapImage);
 
@@ -83,6 +78,7 @@ namespace Person_Model
 
 
             Font MainFont = new Font(pfc.Families[0], 20, FontStyle.Regular);
+            Font InsertsFont = new Font(pfc.Families[0], 70, FontStyle.Regular);
             ///کد ملی
             graphicImage.AddText(model.NationalCode > 0 ? ImageTools.ConvertIntToString((Int32)model.NationalCode) : "", MainFont/*NationalCodeFont*/, Brushes.Black, 650, 121);
             graphicImage.AddText(model.FirstName, MainFont, Brushes.Black, 650, 170);
@@ -93,14 +89,14 @@ namespace Person_Model
             //نام پدر
             graphicImage.AddText(model.FatherName, MainFont /*FatherNameFont*/, Brushes.Black, 650, 305);
             //وضعیت حیات
-            graphicImage.AddText((model.NationalCode > 0) ? model.IsDead ? "(فوت شده)" : "" : "", MainFont /*FatherNameFont*/, Brushes.Black, 650, 318);
+            //  graphicImage.AddText((model.NationalCode > 0) ? model.IsDead ? "(فوت شده)" : "" : "", MainFont /*FatherNameFont*/, Brushes.Black, 650, 318);
             //تاریخ درخواست
             //  graphicImage.AddText("تاریخ استعلام : " + "1398/11/11", font /* DetialsFont*/, Brushes.Black, 655, 400);
 
             //المثنی / اصل
             //  graphicImage.AddText(model.Almosana ? "(المثنی)" : "اصل", font /*FatherNameFont*/, Brushes.Black, 629, 397);
 
-            graphicImage.AddText(model.Almosana ? "المثنی" : "اصل", new Font(Font.FontFamily, 80, FontStyle.Bold) /*FatherNameFont*/, Brushes.LightSlateGray, 200, 400, -45);
+
 
 
             //روز به حروف
@@ -126,11 +122,14 @@ namespace Person_Model
             //  graphicImage.AddText(model.FollowUp.ToString(), font/* DetialsFont*/, Brushes.Black, 300, 605);
             //FollowUp(graphicImage, model.FollowUp.ToString());
 
+            Bitmap personImage = new Bitmap(@"C:\Users\faranam\Desktop\personalImage.png");
+
+            ImageTools.InsertImage(graphicImage, ImageTools.MakeGrayscale(personImage));
             //پیام
             if (model.Message != null)
             {
 
-                graphicImage.AddText(model.Message.ToString(), MainFont/* MessageFont*/, Brushes.Maroon, 370, 1530);
+                graphicImage.AddText(model.Message.ToString(), MainFont/* MessageFont*/, Brushes.Maroon, 650, 360);
             }
 
             /*    IsMan(graphicImage, model.Gender);
@@ -145,10 +144,63 @@ namespace Person_Model
             //  graphicImage.Dispose();
             //   bitMapImage.Dispose();
             //  System.IO.File.AppendAllText(@"D:\SepamFTP.txt", "115: " + model.NationalCode + "\r" + "\n");
+            if (model.IsDead)
+            {
+                graphicImage.AddText(model.IsDeadToString, InsertsFont /*FatherNameFont*/, Brushes.Maroon, 300, 120);
+                graphicImage.DrawRectangle(new Pen(Brushes.Maroon, 5), new Rectangle(30, 125, 260, 80));
+            }
 
+            if (!model.IsValid)
+            {
+                graphicImage.AddText("باطل", InsertsFont /*FatherNameFont*/, Brushes.Maroon, 250, 220);
+                graphicImage.DrawRectangle(new Pen(Brushes.Maroon, 5), new Rectangle(100, 225, 140, 85));
+            }
+            if (model.Almosana)
+            {
+                graphicImage.AddText(model.Almosana ? "المثنی" : "  اصل", InsertsFont /*FatherNameFont*/, Brushes.LightSlateGray, 200, 400, -45);
+                graphicImage.DrawRectangle(new Pen(Brushes.LightSlateGray, 5), new Rectangle(0, 400, 200, 100));
+            }
             return bitMapImage;
         }
 
+        private void button1_Click(object sender, EventArgs e)
+        {
+            bitMapImage = new Bitmap(@"C:\Users\faranam\Desktop\Final Card.png");
+            var p = new PersonInfoModel();
+            p = new PersonInfoModel
+            {
+                Almosana = true,
+                BirthDate = 13780825,
+                DeathDate = "Unknonw",
+                FatherName = "حجت الله",
+                FirstName = "محمدجواد",
+                FollowUp = new Guid(),
+                Gender = 0,
+                Id = 0151067030,
+                IsDead = false,
+                LastName = "عرب سلمانی",
+                NationalCode = 0410670030,
+                Message = "کارگران مشغول کارند.",
+                IsValid = true,
+            };
+
+            if (checkBox3.Checked)
+                p.IsDead = true;
+            else
+                p.IsDead = false;
+
+            if (checkBox1.Checked)
+                p.Almosana = true;
+            else
+                p.Almosana = false;
+
+            if (checkBox2.Checked)
+                p.IsValid = false;
+            else
+                p.IsValid = true;
+
+            pictureBox1.Image = CreateResponse(p);
+        }
     }
 
     public static class ImageTools
@@ -181,6 +233,46 @@ namespace Person_Model
             }
         }
 
+        public static void InsertImage(this Graphics graphicImage, Bitmap bitmapImage)
+        {
+            graphicImage.DrawImage(bitmapImage, new Rectangle(50, 90, 220, 265));
+        }
+
+        public static Bitmap MakeGrayscale(Bitmap original)
+        {
+            //create a blank bitmap the same size as original
+            Bitmap newBitmap = new Bitmap(original.Width, original.Height);
+
+            //get a graphics object from the new image
+            using (Graphics g = Graphics.FromImage(newBitmap))
+            {
+
+                //create the grayscale ColorMatrix
+                ColorMatrix colorMatrix = new ColorMatrix(
+                   new float[][]
+                   {
+             new float[] {.3f, .3f, .3f, 0, 0},
+             new float[] {.59f, .59f, .59f, 0, 0},
+             new float[] {.11f, .11f, .11f, 0, 0},
+             new float[] {0, 0, 0, 1, 0},
+             new float[] {0, 0, 0, 0, 1}
+                   });
+
+                //create some image attributes
+                using (ImageAttributes attributes = new ImageAttributes())
+                {
+
+                    //set the color matrix attribute
+                    attributes.SetColorMatrix(colorMatrix);
+
+                    //draw the original image on the new image
+                    //using the grayscale color matrix
+                    g.DrawImage(original, new Rectangle(0, 0, original.Width, original.Height),
+                                0, 0, original.Width, original.Height, GraphicsUnit.Pixel, attributes);
+                }
+            }
+            return newBitmap;
+        }
         public static string ConvertIntToString(int value)
         {
             int counter;
